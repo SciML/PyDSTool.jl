@@ -20,11 +20,16 @@ DSargs[:varspecs] = py_vardict
 DS = ds.Generator[:Vode_ODEsystem](DSargs)
 traj = DS[:compute]("demo")
 pts = traj[:sample]()
-pts_dict = pts[:__dict__]
 d = Dict{Symbol,Vector{Float64}}()
-d[Symbol(pts_dict["indepvarname"])] = pts_dict["indepvararray"]
-names = pts_dict["_ix_name_map"]
-arrs = pts_dict["coordarray"]
+d[Symbol(pts[:indepvarname])] = pts[:indepvararray]
+names = pts[:_ix_name_map]
+arrs = pts[:coordarray]
 for i in 1:length(names)
   d[Symbol(names[i])] = arrs[i,:]
 end
+using Plots
+plot(d[:t],[d[:x],d[:y]])
+
+# Interpolations
+t = 5.4
+traj(t)[:coordarray]
