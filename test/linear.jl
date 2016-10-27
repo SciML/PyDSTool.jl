@@ -1,35 +1,15 @@
 using PyDSTool, PyCall
 
-icdict = Dict("x"=>1,"y"=>0.4)
-py_icdict = PyDict(icdict)
-pardict = Dict("k"=>0.1,"m"=>0.5)
-py_pardict = PyDict(pardict)
+ics = Dict("x"=>1,"y"=>0.4)
+pars = Dict("k"=>0.1,"m"=>0.5)
 x_rhs = "y"
 y_rhs = "-k*x/m"
-vardict = Dict("x"=>x_rhs,"y"=>y_rhs)
-py_vardict = PyDict(vardict)
-
+vars = Dict("x"=>x_rhs,"y"=>y_rhs)
+tspan = [0,30]
 # keys()...
 
-DSargs = ds.args()
-DSargs[:name] = "SHM"
-DSargs[:ics] = py_icdict
-DSargs[:pars] = py_pardict
-DSargs[:tdata] = [0,20]
-DSargs[:varspecs] = py_vardict
-DS = ds.Generator[:Vode_ODEsystem](DSargs)
-traj = DS[:compute]("demo")
-pts = traj[:sample]()
-d = Dict{Symbol,Vector{Float64}}()
-d[Symbol(pts[:indepvarname])] = pts[:indepvararray]
-names = pts[:_ix_name_map]
-arrs = pts[:coordarray]
-for i in 1:length(names)
-  d[Symbol(names[i])] = arrs[i,:]
-end
+dsargs = build_ode("SHM",ics,pars,vars,tspan)
+d = solve_ode(dsargs)
+
 using Plots
 plot(d[:t],[d[:x],d[:y]])
-
-# Interpolations
-t = 5.4
-traj(t)[:coordarray]
