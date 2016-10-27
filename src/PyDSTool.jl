@@ -1,5 +1,7 @@
 module PyDSTool
 
-# package code goes here
+using PyCall
+@pyimport PyDSTool as ds
 
+export ds
 end # module
