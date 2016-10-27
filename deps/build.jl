@@ -4,8 +4,13 @@ using Conda
 
 if PyCall.conda
 	Conda.add("pip")
-	pip = joinpath(Conda.BINDIR, "pip")
-	run(`$pip install pydstool`)
+	if is_windows() # Windows needs scipy and uses the wrong pip location
+    Conda.add("scipy")
+    run(`$(joinpath(Conda.PYTHONDIR, "python")) -m pip install pydstool`)
+  else
+    pip = joinpath(Conda.BINDIR, "pip")
+    run(`$pip install pydstool`)
+  end 
 else
 	try
 		pyimport("pydstool")
