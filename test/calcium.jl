@@ -39,6 +39,16 @@ names,d,stab,special_points = bifurcation_curve(PC,"EP-C",["i"],
                           save_eigen=true,name="EQ1",
                           print_info=true,calc_stab=true)
 
+function find_changes(stab)
+  changes = Int[]
+  for i in 2:length(stab)
+    if stab[i]!= stab[i-1]
+      push!(changes,i)
+    end
+  end
+  changes
+end
+
 using Plots
 p = plot(d["i"][1:148],d["v"][1:148],color=:blue,leg=false,lw=3)
 plot!(p,d["i"][148:280],d["v"][148:280],lw=3,line=(:dash),color=:red)
@@ -49,13 +59,16 @@ scatter!(p,[d["i"][281]],[d["v"][281]],label="LP2",markersize=15,color=:red)
 names,d,stab,special_points = bifurcation_curve(PC,"LP-C",["i","gca"],
                               max_num_points=200,initpoint="EQ1:LP2",
                               max_stepsize=2,min_stepsize=1e-5,
-                              stepsize=2e-2,loc_bif_points="all",
+                              stepsize=2e-2,loc_bif_points="CP",
                               save_eigen=true,name="SN1",
                               print_info=true,calc_stab=true,
                               solver_sequence=[:forward,:backward])
 
 using Plots
-p = plot(d["i"][1:148],d["gca"][1:148],color=:blue,leg=false,lw=3)
+p = plot(d["i"],d["gca"],color=:blue,leg=false,lw=3)
+sps = special_points["CP1"][1:2]
+scatter!(p,[sps[2]],[sps[1]],color=:red,markersize=15)
+# Note: names[1] == "gca", names[2]=="i"
 
 #=
 #Manual
