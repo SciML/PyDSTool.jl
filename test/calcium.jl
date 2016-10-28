@@ -27,10 +27,10 @@ dsargs = build_ode(name,ics,pars,vars,tdomain)
 #plot(d[:t],d[:v])
 
 #Bifurcation Plots
-ode = ds.Generator[:Vode_ODEsystem](dsargs)
+ode = ds[:Generator][:Vode_ODEsystem](dsargs)
 ode[:set](pars = Dict("i"=>-220))
 ode[:set](ics  = Dict("v"=>-170))
-PC = ds.ContClass(ode)
+PC = ds[:ContClass](ode)
 
 names,d,stab,special_points = bifurcation_curve(PC,"EP-C",["i"],
                           max_num_points=450,

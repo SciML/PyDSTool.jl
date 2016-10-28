@@ -2,7 +2,11 @@ module PyDSTool
 
 using PyCall, DataStructures
 
-@pyimport PyDSTool as ds
+const ds = PyNULL()
+
+function __init__()
+    copy!(ds, pyimport("PyDSTool"))
+end
 
 PYDSTOOL_CURVE_CLASSES = Set(["EP-C","LP-C","H-C1","H-C2","FP-C","LC-C"])
 
@@ -37,7 +41,7 @@ set_tdata(dsargs,tdata) = (dsargs[:tdata] = tdata; nothing)
 set_tdomain(dsargs,tdomain) = (dsargs[:tdomain] = tdomain; nothing)
 
 function build_ode(name,ics,pars,vars,tdomain)
-  dsargs = ds.args()
+  dsargs = ds[:args]()
   set_name(dsargs,name)
   set_ics(dsargs,ics)
   set_pars(dsargs,pars)
@@ -47,7 +51,7 @@ function build_ode(name,ics,pars,vars,tdomain)
 end
 
 function solve_ode(dsargs,alg=:Vode_ODEsystem,name="Default Name")
-  DS = ds.Generator[alg](dsargs)
+  DS = ds[:Generator][alg](dsargs)
   traj = DS[:compute](name)
   pts = traj[:sample]()
   d = interpert_pts(pts)
@@ -82,7 +86,7 @@ function bifurcation_curve(PC,bif_type,freepars;max_num_points=450,
   end
 
   # Setup Parameters
-  PCargs = ds.args(name=name)
+  PCargs = ds[:args](name=name)
   PCargs[:type]         = bif_type
   PCargs[:freepars]     = freepars
   PCargs[:MaxNumPoints] = max_num_points
