@@ -11,5 +11,5 @@ tspan = [0,30]
 dsargs = build_ode("SHM",ics,pars,vars,tspan)
 d = solve_ode(dsargs)
 
-using Plots
-plot(d[:t],[d[:x],d[:y]])
+#using Plots
+#plot(d[:t],[d[:x],d[:y]])
