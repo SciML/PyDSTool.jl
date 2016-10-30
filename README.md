@@ -8,7 +8,8 @@
 PyDSTool.jl is a wrapper for the PyDSTool Python library for analysis of dynamical
 systems. This wrapper is "low level" and provides some functionality to make
 directly dealing with the library a little bit easier, but still requires knowledge
-of PyDSTool itself. It is used as a backend for the [Bifurcate.jl](https://github.com/JuliaDiffEq/Bifurcate.jl) component of the
+of PyDSTool itself. The tests show how to use the functionality.
+It is used as a backend for the [Bifurcate.jl](https://github.com/JuliaDiffEq/Bifurcate.jl) component of the
 DifferentialEquations.jl ecosystem. It is recommended that users use this functionality
 through [DifferentialEquations.jl](https://github.com/JuliaDiffEq/DifferentialEquations.jl).
 
