@@ -1,3 +1,5 @@
+__precompile__()
+
 module PyDSTool
 
 using PyCall, DataStructures, DiffEqBase, RecipesBase
