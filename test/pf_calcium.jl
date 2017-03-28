@@ -18,17 +18,16 @@ ode[:set](pars = Dict("i"=>-220))
 ode[:set](ics  = Dict("v"=>-170))
 PC = ds[:ContClass](ode)
 
-d,stab,special_points = bifurcation_curve(PC,"EP-C",["i"],
-                          max_num_points=450,
-                          max_stepsize=2,min_stepsize=1e-5,
-                          stepsize=2e-2,loc_bif_points="all",
-                          save_eigen=true,name="EQ1",
-                          print_info=true,calc_stab=true)
+bif = bifurcation_curve(PC,"EP-C",["i"],
+                        max_num_points=450,
+                        max_stepsize=2,min_stepsize=1e-5,
+                        stepsize=2e-2,loc_bif_points="all",
+                        save_eigen=true,name="EQ1",
+                        print_info=true,calc_stab=true)
+
+@test length(bif.changes) == 2
 
 #=
-using Plots, PlotRecipes
-y = collect((1:200)/11)
-x = -cos(y)
-g = ["N"; [x[i] > x[i-1] ? "N" : "S" for i in 2:length(x)]]
-compositeline(x, y, g, linestyle = [:solid :dash], color = [:blue :red])
+using Plots
+plot(bif,(:i,:v))
 =#

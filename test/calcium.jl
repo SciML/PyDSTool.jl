@@ -32,32 +32,30 @@ ode[:set](pars = Dict("i"=>-220))
 ode[:set](ics  = Dict("v"=>-170))
 PC = ds[:ContClass](ode)
 
-d,stab,special_points = bifurcation_curve(PC,"EP-C",["i"],
+bif = bifurcation_curve(PC,"EP-C",["i"],
                           max_num_points=450,
                           max_stepsize=2,min_stepsize=1e-5,
                           stepsize=2e-2,loc_bif_points="all",
                           save_eigen=true,name="EQ1",
                           print_info=true,calc_stab=true)
 
+@test length(bif.changes) == 2
 #=
-p = plot(d[:i][1:150],d[:v][1:150],color=:blue,leg=false,lw=3)
-plot!(p,d[:i][150:280],d[:v][150:280],lw=3,line=(:dash),color=:red)
-plot!(p,d[:i][280:end],d[:v][280:end],color=:blue,lw=3)
-scatter!(p,[special_points["LP1"][:i]],[special_points["LP1"][:v]],label="LP1",markersize=15,color=:red)
-scatter!(p,[special_points["LP2"][:i]],[special_points["LP2"][:v]],label="LP1",markersize=15,color=:red)
+using Plots
+plot(bif,(:i,:v))
 =#
 
-d,stab,special_points = bifurcation_curve(PC,"LP-C",["i","gca"],
-                              max_num_points=200,initpoint="EQ1:LP2",
-                              max_stepsize=2,min_stepsize=1e-5,
-                              stepsize=2e-2,loc_bif_points="CP",
-                              save_eigen=true,name="SN1",
-                              print_info=true,calc_stab=true,
-                              solver_sequence=[:forward,:backward])
+bif = bifurcation_curve(PC,"LP-C",["i","gca"],
+                        max_num_points=200,initpoint="EQ1:LP2",
+                        max_stepsize=2,min_stepsize=1e-5,
+                        stepsize=2e-2,loc_bif_points="CP",
+                        save_eigen=true,name="SN1",
+                        print_info=true,calc_stab=true,
+                        solver_sequence=[:forward,:backward])
+
+@test length(bif.changes) == 0
 
 #=
 using Plots
-p = plot(d[:i],d[:gca],color=:blue,leg=false,lw=3)
-sps = special_points["CP1"][1:2]
-scatter!(p,[sps[2]],[sps[1]],color=:red,markersize=15)
+plot(bif,(:i,:gca))
 =#

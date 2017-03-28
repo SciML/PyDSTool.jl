@@ -1,3 +1,28 @@
+type BifurcationCurve{DType,SPType}
+  d::DType
+  stab::Vector{String}
+  special_points::SPType
+  changes::Vector{Int}
+end
+
+@recipe function f(bif::BifurcationCurve,coords)
+  x = bif.d[coords[1]]
+  y = bif.d[coords[2]]
+  g = bif.stab
+  linestyle --> reshape([bif.stab[i] == "S" ? :solid : :dash for i in [1;bif.changes]],1,length(bif.changes)+1)
+  color --> reshape([bif.stab[i] == "S" ? :blue : :red for i in [1;bif.changes]],1,length(bif.changes)+1)
+  legend --> false
+  for k in keys(bif.special_points)
+    @series begin
+      seriestype --> :scatter
+      markersize --> 5
+      color := :red
+      [bif.special_points[k][coords[1]]],[bif.special_points[k][coords[2]]]
+    end
+  end
+  PlotRecipes.CompositeLine((x, y, g))
+end
+
 function bifurcation_curve(PC,bif_type,freepars;max_num_points=450,
                           max_stepsize=2,min_stepsize=1e-5,
                           stepsize=2e-2,loc_bif_points="all",
@@ -84,7 +109,10 @@ function bifurcation_curve(PC,bif_type,freepars;max_num_points=450,
     end
   end
   =#
-  d,stab,special_points
+
+  changes = find_changes(stab)
+
+  BifurcationCurve(d,stab,special_points,changes)
 end
 
 function find_changes(stab)

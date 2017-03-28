@@ -3,3 +3,5 @@ PyCall
 DataStructures
 Conda
 DiffEqBase
+RecipesBase
+PlotRecipes
