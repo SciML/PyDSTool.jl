@@ -9,9 +9,12 @@ end
   x = bif.d[coords[1]]
   y = bif.d[coords[2]]
   g = bif.stab
-  linestyle --> reshape([bif.stab[i] == "S" ? :solid : :dash for i in [1;bif.changes]],1,length(bif.changes)+1)
-  color --> reshape([bif.stab[i] == "S" ? :blue : :red for i in [1;bif.changes]],1,length(bif.changes)+1)
+  style_order = unique(bif.stab)
+  linestyle --> reshape([style == "S" ? :solid : :dash for style in style_order],1,length(style_order))
+  color --> reshape([style == "S" ? :blue : :red for style in style_order],1,length(style_order))
   legend --> false
+  xlabel --> coords[1]
+  ylabel --> coords[2]
   for k in keys(bif.special_points)
     @series begin
       seriestype --> :scatter
@@ -21,6 +24,47 @@ end
     end
   end
   CompositeLine((x, y, g))
+end
+
+type CompositeLine
+  args
+end
+
+@recipe function f(h::CompositeLine)
+    x, y, linegroups = h.args
+
+    seriesx = Dict{eltype(linegroups), Vector{Float64}}()
+    seriesy = Dict{eltype(linegroups), Vector{Float64}}()
+
+    for i in 1:length(linegroups)
+        if ! haskey(seriesx, linegroups[i])
+            seriesx[linegroups[i]] = Float64[]
+            seriesy[linegroups[i]] = Float64[]
+        end
+
+        push!(seriesx[linegroups[i]], x[i])
+        push!(seriesy[linegroups[i]], y[i])
+
+        if i > 1 && linegroups[i] != linegroups[i-1]
+            # End the previous series with the same point to avoid gaps
+            push!(seriesx[linegroups[i-1]], x[i])
+            push!(seriesy[linegroups[i-1]], y[i])
+
+            # Add an NaN to stop the group
+            push!(seriesx[linegroups[i-1]], NaN)
+            push!(seriesy[linegroups[i-1]], NaN)
+
+        end
+    end
+
+    seriestype := :path
+
+    for key in keys(seriesx)
+        @series begin
+            seriesx[key], seriesy[key]
+        end
+    end
+
 end
 
 function bifurcation_curve(PC,bif_type,freepars;max_num_points=450,

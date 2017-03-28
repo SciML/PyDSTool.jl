@@ -28,6 +28,6 @@ bif = bifurcation_curve(PC,"EP-C",["i"],
 @test length(bif.changes) == 2
 
 #=
-using Plots, PlotRecipes
+using Plots
 plot(bif,(:i,:v))
 =#
