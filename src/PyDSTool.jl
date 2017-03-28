@@ -1,6 +1,6 @@
 module PyDSTool
 
-using PyCall, DataStructures
+using PyCall, DataStructures, DiffEqBase
 
 const ds = PyNULL()
 
@@ -50,11 +50,23 @@ function build_ode(name,ics,pars,vars,tdomain)
   dsargs
 end
 
+function build_ode(f::AbstractParameterizedFunction,u0,tspan)
+  name = string(typeof(f))
+  pars = Dict{String,Any}(); vars = Dict{String,Any}(); ics = Dict{String,Any}()
+  for i in 1:length(f.params)
+    pars[string(f.params[i])] = getfield(f,f.params[i])
+  end
+  for i in 1:length(f.syms)
+    vars[string(f.syms[i])] = string(f.funcs[i])
+    ics[string(f.syms[i])] = u0[i]
+  end
+  build_ode(name,ics,pars,vars,tspan)
+end
+
 function solve_ode(dsargs,alg=:Vode_ODEsystem,name="Default Name")
   DS = ds[:Generator][alg](dsargs)
   traj = DS[:compute](name)
-  pts = traj[:sample]()
-  d = interpert_pts(pts)
+  d = interpert_traj(traj)
 
   #=
   # Interpolations
@@ -63,13 +75,12 @@ function solve_ode(dsargs,alg=:Vode_ODEsystem,name="Default Name")
   =#
 end
 
-function interpert_pts(pts::PyObject)
+function interpert_traj(traj)
   d = Dict{Symbol,Vector{Float64}}()
-  d[Symbol(pts[:indepvarname])] = pts[:indepvararray]
-  names = pts[:_ix_name_map]
-  arrs = pts[:coordarray]
-  for i in 1:length(names)
-    d[Symbol(names[i])] = arrs[i,:]
+  d[Symbol(traj[:indepvarname])] = first(first(values(traj[:underlyingMesh]())))
+  depvars = PyDict(traj[:sample]())
+  for k in keys(depvars)
+    d[Symbol(k)] = depvars[k]
   end
   d
 end
@@ -80,6 +91,8 @@ function bifurcation_curve(PC,bif_type,freepars;max_num_points=450,
                           save_eigen=true,name="DefaultName",
                           print_info=true,calc_stab=true,
                           initpoint=nothing,solver_sequence=[:forward])
+
+  curve_point_type = bif_type[1:end-2]
 
   if !(typeof(freepars)<:AbstractArray)
     freepars = [freepars]
@@ -112,12 +125,10 @@ function bifurcation_curve(PC,bif_type,freepars;max_num_points=450,
 
 
   # Get the curve
-  pts = PC[:curves][name][:_curveToPointset]()
-  d = OrderedDict{String,Vector{Float64}}()
-  names = pts[:_ix_name_map]
-  arrs = pts[:coordarray]
-  for i in 1:length(names)
-    d[names[i]] = arrs[i,:]
+  pts = PyDict(PC[:curves][name][:_curveToPointset]())
+  d = OrderedDict{Symbol,Vector{Float64}}()
+  for k in keys(pts)
+    d[Symbol(k)] = pts[k]
   end
   len = length(d[first(keys(d))])
 
@@ -125,23 +136,52 @@ function bifurcation_curve(PC,bif_type,freepars;max_num_points=450,
   # S => Stable
   # U => Unstable
   # N => Neutral
+
+  # Get this from the information at:
+  # https://github.com/robclewley/pydstool/blob/master/PyDSTool/PyCont/ContClass.py#L218
+  curve = PC[:curves][name]
   if calc_stab
-    stab = [PC[:curves][name][:sol][i][:labels][bif_type[1:end-2]]["stab"] for i in 1:len]
+    stab = [curve[:CurveInfo][i][curve_point_type]["stab"] for i in 1:len]
   else
     stab = []
   end
 
   # Get information for special points, ex limit points
   special_points = Dict{String,Any}()
-  for point_type in ALL_POINT_TYPES
-    res = PC[:curves][name][:sol][:bylabel](point_type)
-    if res != nothing
-      for i in 1:length(res)
-        special_points[point_type*string(i)] = res[i][:coordarray]
+  for k in keys(curve[:BifPoints])
+    for i in 1:length(curve[:BifPoints][k][:found])
+      tmp_dict = PyDict(curve[:BifPoints][k][:found][i]["X"])
+      dd = Dict{Symbol,Float64}()
+      for k2 in keys(tmp_dict)
+        dd[Symbol(k2)]=tmp_dict[k2]
       end
+      special_points[k*string(i)] = dd
     end
   end
-  names,d,stab,special_points
+  #=
+  # Start and endpoints
+  for i in 1:len
+    if "P" in keys(curve[i])
+      tmp_dict = PyDict(curve[i]["P"]["data"]["V"])
+      dd = Dict{Symbol,Float64}()
+      for k in keys(tmp_dict)
+        dd[Symbol(k)]=tmp_dict[k]
+      end
+      special_points[curve[i]["P"]["name"]] = dd
+    end
+  end
+  =#
+  d,stab,special_points
+end
+
+function find_changes(stab)
+  changes = Int[]
+  for i in 2:length(stab)
+    if stab[i]!= stab[i-1]
+      push!(changes,i)
+    end
+  end
+  changes
 end
 
 export ds, build_args
@@ -151,4 +191,5 @@ export PYDSTOOL_CURVE_CLASSES, ALL_POINT_TYPES
 export set_name,set_ics,set_pars, set_vars, set_tdata,set_fnspecs,
        set_tdomain, interpert_pts, build_ode, solve_ode,bifurcation_curve
 
+export find_changes
 end

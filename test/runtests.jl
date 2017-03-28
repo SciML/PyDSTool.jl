@@ -4,3 +4,4 @@ using Base.Test
 # write your own tests here
 include("linear.jl")
 include("calcium.jl")
+include("pf_calcium.jl")
