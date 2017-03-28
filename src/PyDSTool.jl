@@ -1,6 +1,6 @@
 module PyDSTool
 
-using PyCall, DataStructures, DiffEqBase, PlotRecipes, RecipesBase
+using PyCall, DataStructures, DiffEqBase, RecipesBase
 
 const ds = PyNULL()
 

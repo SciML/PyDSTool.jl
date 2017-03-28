@@ -20,7 +20,7 @@ end
       [bif.special_points[k][coords[1]]],[bif.special_points[k][coords[2]]]
     end
   end
-  PlotRecipes.CompositeLine((x, y, g))
+  CompositeLine((x, y, g))
 end
 
 function bifurcation_curve(PC,bif_type,freepars;max_num_points=450,
