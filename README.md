@@ -6,7 +6,7 @@
 [![codecov.io](http://codecov.io/github/JuliaDiffEq/PyDSTool.jl/coverage.svg?branch=master)](http://codecov.io/github/JuliaDiffEq/PyDSTool.jl?branch=master)
 
 PyDSTool.jl is a wrapper for the PyDSTool Python library for analysis of dynamical
-systems. This wrapper includes two parts:
+systems. This wrapper includes three parts:
 
 1) Installation and direct access to PyDSTool
 2) A low-level development API and provides some functionality to make directly dealing
