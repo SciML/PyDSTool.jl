@@ -13,7 +13,7 @@ if PyCall.conda
   end 
 else
 	try
-		pyimport("pydstool")
+		pyimport("PyDSTool")
 	catch ee
 		typeof(ee) <: PyCall.PyError || rethrow(ee)
 		warn("""
