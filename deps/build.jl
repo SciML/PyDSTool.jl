@@ -3,8 +3,6 @@ using Conda
 
 
 if PyCall.conda
-	Conda.add("pip")
-	if is_windows() # Windows needs scipy and uses the wrong pip location
     Conda.add("scipy")
     Conda.add_channel("conda-forge")
     Conda.add("pydstool")
