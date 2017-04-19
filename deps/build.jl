@@ -1,7 +1,6 @@
 using PyCall
 using Conda
 
-
 if PyCall.conda
     Conda.add("scipy")
     Conda.add_channel("conda-forge")
