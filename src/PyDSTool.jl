@@ -7,7 +7,7 @@ using PyCall, DataStructures, DiffEqBase, RecipesBase
 const ds = PyNULL()
 
 function __init__()
-    copy!(ds, pyimport("PyDSTool"))
+  copy!(ds, pyimport_conda("PyDSTool", "pydstool", "conda-forge"))
 end
 
 include("constants.jl")
