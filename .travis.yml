@@ -11,7 +11,7 @@ matrix:
     - julia: nightly
 notifications:
   email: false
-env:		
+env:
   - PYTHON=""
 # uncomment the following lines to override the default test script
 #script:
