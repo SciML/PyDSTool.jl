@@ -1,4 +1,4 @@
-type BifurcationCurve{DType,SPType}
+mutable struct BifurcationCurve{DType,SPType}
   d::DType
   stab::Vector{String}
   special_points::SPType
@@ -26,7 +26,7 @@ end
   CompositeLine((x, y, g))
 end
 
-type CompositeLine
+mutable struct CompositeLine
   args
 end
 
