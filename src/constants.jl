@@ -16,16 +16,16 @@ ALL_POINT_TYPES = union([CONT_BIF_POINTS;EQUILIBRIUM_BIF_POINTS;FOLD_BIF_POINTS;
 set_name(dsargs,name::String) = (dsargs[:name] = name; nothing)
 
 set_ics(dsargs,icdict::PyDict) = (dsargs[:ics] = icdict; nothing)
-set_ics{T}(dsargs,icdict::Dict{String,T}) = set_ics(dsargs,PyDict(icdict))
+set_ics(dsargs,icdict::Dict{String,T}) where {T} = set_ics(dsargs,PyDict(icdict))
 
 set_pars(dsargs,pardict::PyDict) = (dsargs[:pars] = pardict; nothing)
-set_pars{T}(dsargs,pardict::Dict{String,T}) = set_pars(dsargs,PyDict(pardict))
+set_pars(dsargs,pardict::Dict{String,T}) where {T} = set_pars(dsargs,PyDict(pardict))
 
 set_vars(dsargs,vardict::PyDict) = (dsargs[:varspecs] = vardict; nothing)
-set_vars{T}(dsargs,vardict::Dict{String,T}) = set_vars(dsargs,PyDict(vardict))
+set_vars(dsargs,vardict::Dict{String,T}) where {T} = set_vars(dsargs,PyDict(vardict))
 
 set_fnspecs(dsargs,specsdict::PyDict) = (dsargs[:fnspecs] = specsdict; nothing)
-set_fnspecs{T}(dsargs,specsdict::Dict{String,T}) = set_vars(dsargs,PyDict(specsdict))
+set_fnspecs(dsargs,specsdict::Dict{String,T}) where {T} = set_vars(dsargs,PyDict(specsdict))
 
 set_tdata(dsargs,tdata) = (dsargs[:tdata] = tdata; nothing)
 set_tdomain(dsargs,tdomain) = (dsargs[:tdomain] = tdomain; nothing)

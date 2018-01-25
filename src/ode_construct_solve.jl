@@ -8,11 +8,11 @@ function build_ode(name,ics,pars,vars,tdomain)
   dsargs
 end
 
-function build_ode(f::AbstractParameterizedFunction,u0,tspan)
+function build_ode(f::AbstractParameterizedFunction,u0,tspan,p)
   name = string(typeof(f))
   pars = Dict{String,Any}(); vars = Dict{String,Any}(); ics = Dict{String,Any}()
   for i in 1:length(f.params)
-    pars[string(f.params[i])] = getfield(f,f.params[i])
+    pars[string(f.params[i])] = p[i]
   end
   for i in 1:length(f.syms)
     vars[string(f.syms[i])] = string(f.funcs[i])

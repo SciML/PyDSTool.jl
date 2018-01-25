@@ -2,16 +2,16 @@
 language: julia
 os:
   - linux
-  - osx
+#  - osx
 julia:
-  - 0.5
+  - 0.6
   - nightly
 matrix:
   allow_failures:
     - julia: nightly
 notifications:
   email: false
-env:		
+env:
   - PYTHON=""
 # uncomment the following lines to override the default test script
 #script:

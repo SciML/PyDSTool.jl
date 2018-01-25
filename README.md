@@ -16,5 +16,3 @@ systems. This wrapper includes three parts:
 The tests show how to use the functionality.
 It is used as an addon in the DifferentialEquations.jl ecosystem. It is recommended
 that users use this functionality through [DifferentialEquations.jl](https://github.com/JuliaDiffEq/DifferentialEquations.jl).
-
-Note: This is a work in progress!
