@@ -1,20 +1,22 @@
 mutable struct BifurcationCurve{DType,SPType}
-  d::DType
+  points::DType
   stab::Vector{String}
   special_points::SPType
   changes::Vector{Int}
 end
 
 @recipe function f(bif::BifurcationCurve,coords)
-  x = bif.d[coords[1]]
-  y = bif.d[coords[2]]
+  x = bif.points[coords[1]]
+  y = bif.points[coords[2]]
   g = bif.stab
   style_order = unique(bif.stab)
+
   linestyle --> reshape([style == "S" ? :solid : :dash for style in style_order],1,length(style_order))
   color --> reshape([style == "S" ? :blue : :red for style in style_order],1,length(style_order))
   legend --> false
   xlabel --> coords[1]
   ylabel --> coords[2]
+
   for k in keys(bif.special_points)
     @series begin
       seriestype --> :scatter
@@ -108,11 +110,11 @@ function bifurcation_curve(PC,bif_type,freepars;max_num_points=450,
 
   # Get the curve
   pts = PyDict(PC[:curves][name][:_curveToPointset]())
-  d = OrderedDict{Symbol,Vector{Float64}}()
+  points = OrderedDict{Symbol,Vector{Float64}}()
   for k in keys(pts)
-    d[Symbol(k)] = pts[k]
+    points[Symbol(k)] = pts[k]
   end
-  len = length(d[first(keys(d))])
+  len = length(points[first(keys(points))])
 
   # Get the stability
   # S => Stable
@@ -156,7 +158,7 @@ function bifurcation_curve(PC,bif_type,freepars;max_num_points=450,
 
   changes = find_changes(stab)
 
-  BifurcationCurve(d,stab,special_points,changes)
+  BifurcationCurve(points,stab,special_points,changes)
 end
 
 function find_changes(stab)
