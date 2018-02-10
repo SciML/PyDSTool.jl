@@ -8,7 +8,8 @@ const ds = PyNULL()
 
 function __init__()
   try
-    pyimport_conda("PyDSTool", "pydstool", "conda-forge")
+    copy!(ds, pyimport_conda("PyDSTool", "pydstool", "conda-forge"))
+    return
   catch err
     if err isa PyCall.PyError
       # A dirty hack to force importing PyDSTool:
