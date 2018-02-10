@@ -7,6 +7,26 @@ using PyCall, DataStructures, DiffEqBase, RecipesBase
 const ds = PyNULL()
 
 function __init__()
+  try
+    pyimport_conda("PyDSTool", "pydstool", "conda-forge")
+  catch err
+    if err isa PyCall.PyError
+      # A dirty hack to force importing PyDSTool:
+      # https://github.com/JuliaDiffEq/PyDSTool.jl/issues/5
+      py"""
+      import scipy
+
+      original_version = scipy.__version__
+      try:
+          scipy.__version__ = '0.9'
+          import PyDSTool
+      finally:
+          scipy.__version__ = original_version
+      """
+    else
+      rethrow()
+    end
+  end
   copy!(ds, pyimport_conda("PyDSTool", "pydstool", "conda-forge"))
 end
 
