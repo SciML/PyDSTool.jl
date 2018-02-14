@@ -74,6 +74,8 @@ function bifurcation_curve(PC,bif_type,freepars;max_num_points=450,
                           stepsize=2e-2,loc_bif_points="all",
                           save_eigen=true,name="DefaultName",
                           print_info=true,calc_stab=true,
+                          var_tol = 1e-6, func_tol = 1e-6,
+                          test_tol = 1e-4,
                           initpoint=nothing,solver_sequence=[:forward])
 
   curve_point_type = bif_type[1:end-2]
@@ -92,6 +94,9 @@ function bifurcation_curve(PC,bif_type,freepars;max_num_points=450,
   PCargs[:StepSize]     = stepsize
   PCargs[:LocBifPoints] = loc_bif_points
   PCargs[:SaveEigen]    = save_eigen
+  PCargs[:VarTol]       = var_tol
+  PCargs[:FuncTol]      = func_tol
+  PCargs[:TestTol]      = test_tol
   if initpoint != nothing
     PCargs[:initpoint] = initpoint
   end
