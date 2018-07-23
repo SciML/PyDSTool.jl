@@ -1,4 +1,4 @@
-using ParameterizedFunctions, PyDSTool, Base.Test
+using ParameterizedFunctions, PyDSTool, Test
 
 f = @ode_def_bare Calcium begin
   dv = ( i + gl * (vl - v) - gca * 0.5 * (1 + tanh( (v-v1)/v2 )) * (v-vca) )/c
