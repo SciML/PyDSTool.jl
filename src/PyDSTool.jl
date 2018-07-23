@@ -2,7 +2,7 @@ __precompile__()
 
 module PyDSTool
 
-using PyCall, DataStructures, DiffEqBase, RecipesBase
+using PyCall, DataStructures, DiffEqBase, RecipesBase, LinearAlgebra
 
 const ds = PyNULL()
 
@@ -20,7 +20,7 @@ function __init__()
       # workaround it by monkey-patching `scipy.__version__` while
       # importing PyDSTool.  We make ./_pydstool_jl_hack.py importable
       # and execute it by importing it.
-      unshift!(PyVector(pyimport("sys")["path"]), @__DIR__)
+      pushfirst!(PyVector(pyimport("sys")["path"]), @__DIR__)
       pyimport("_pydstool_jl_hack")
     else
       rethrow()
