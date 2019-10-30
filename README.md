@@ -104,7 +104,7 @@ using Plots
 plot(bif,(:i,:v))
 ```
 
-![bifurcation_plot](../assets/bifplot.png)
+![bifurcation_plot](https://user-images.githubusercontent.com/1814174/67870184-d1cfac80-fb04-11e9-9957-91470a69ead1.png)
 
 ### Bifucation Curve Function Definition
 
