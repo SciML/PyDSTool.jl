@@ -11,6 +11,7 @@ RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 
 [compat]
 Conda = "0.2"
+DataStructures = "0.17"
 DiffEqBase = "6"
 julia = "1"
 
