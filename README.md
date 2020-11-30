@@ -1,7 +1,6 @@
 # PyDSTool.jl
 
-[![Build Status](https://travis-ci.org/SciML/PyDSTool.jl.svg?branch=master)](https://travis-ci.org/SciML/PyDSTool.jl)
-[![Build status](https://ci.appveyor.com/api/projects/status/qgi1m49ruthu3bh5?svg=true)](https://ci.appveyor.com/project/ChrisRackauckas/pydstool-jl)
+[![Build Status](https://github.com/SciML/PyDSTool.jl/workflows/CI/badge.svg)](https://github.com/SciML/PyDSTool.jl/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/github/SciML/PyDSTool.jl/badge.svg)](https://coveralls.io/github/SciML/PyDSTool.jl)
 [![codecov.io](http://codecov.io/github/SciML/PyDSTool.jl/coverage.svg?branch=master)](http://codecov.io/github/SciML/PyDSTool.jl?branch=master)
 
